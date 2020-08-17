@@ -1,0 +1,401 @@
+function [configuration_frequency,ordered_configs] = particular_configuration(size_graph_x, size_graph_y,source_loc,sinks,source_bound,trials,target)
+%UNTITLED3 Summary of this function goes here
+%   Detailed explanation goes here
+
+% load possible_configurations0by1.mat current_config configs_num total_configs total_trials absolute_A total_frequency total_Q_matrix total_energy_array total_used_edges changed_direction_array total_flow_configs
+load possible_configurations2by2.mat current_config configs_num total_configs total_trials absolute_A total_frequency total_Q_matrix total_energy_array total_used_edges changed_direction_array trials_array configs_array
+% load possible_configurations2by3.mat current_config configs_num total_configs total_trials absolute_A total_frequency total_Q_matrix total_energy_array total_used_edges changed_direction_array total_flow_configs
+
+
+total_edgelist = (abs(total_Q_matrix) > 0)';
+ordered_configs = zeros(size(total_configs,1), size(total_configs,2));
+ordered_flow_configs = zeros(size(total_configs,1), size(total_configs,2));
+configuration_frequency = zeros(size(total_configs,1),1);
+energy_array_idx = zeros(total_trials,1);
+avg_energy_array = zeros(size(total_configs,1), 1);
+
+
+m = 0;
+for j = 1:size(absolute_A ,1)
+    for i = 1:size(total_configs,1)
+        if absolute_A(j,1) == sum(total_configs(i,:))
+            m = m + 1;
+            ordered_configs(m,:) = total_configs(i,:);
+        end
+    end
+end
+
+% 
+% for i = 1:size(ordered_configs,1)
+%     for j = 1:total_trials
+%         if ordered_configs(i,:) == total_edgelist(j,:)
+%             avg_energy_array(i,1) = avg_energy_array(i,1) + total_energy_array(j,1);
+%             energy_array_idx(j,1) = i;
+%             configuration_frequency(i,1) = configuration_frequency(i,1) + 1;
+%         end
+%     end
+%     avg_energy_array(i,1) = avg_energy_array(i,1)/configuration_frequency(i,1);
+% end
+% 
+% [ordered_freqs, ordered_freq_idx] = maxk(configuration_frequency, length(configuration_frequency));
+% 
+% 
+% ordered_freq_configs = zeros(size(ordered_configs,1),size(ordered_configs,2));
+% 
+% for i = 1:length(configuration_frequency)
+%     ordered_freq_configs(i,:) = ordered_configs(ordered_freq_idx(i,1),:);
+% end
+% 
+% figure('Name','Frequency from largest to smallest')
+% plot(1:size(ordered_configs,1),ordered_freqs) 
+
+
+ordered_configs_idx = 1:size(ordered_configs,1);
+edges_array = zeros(current_config,1);
+
+distance_idx_array = zeros(current_config*(current_config -1), 1);
+distance_array = zeros(current_config*(current_config-1), 1);
+distance_matrix = zeros(current_config,current_config);
+
+avg_distance_array  = zeros(current_config,1);
+avg_energy_difference = zeros(current_config,1);
+
+k = 1;
+
+hdist = pdist(ordered_configs,'hamming');
+
+for i = 1:current_config 
+    config_i = ordered_configs(i,:);
+    for  p = 1:current_config
+        avg_energy_difference(i,1) = avg_energy_difference(i,1) + sqrt((avg_energy_array(i,1) - avg_energy_array(p,1))^2);
+        if p ~= i
+            config_j = ordered_configs(p,:);
+            different = 0;
+            for j = 1:size(config_i,2)
+                if config_i(1,j) ~= config_j(1,j)
+                    avg_distance_array(i,1) = avg_distance_array(i,1) + 1;
+                    different = different + 1;
+                end
+                
+            end
+            distance_matrix(i,p) = different;
+            distance_idx_array(k,1) = i;
+            distance_array(k,1) = different;
+            k = k + 1;
+        end
+    end
+    avg_distance_array(i,1) = avg_distance_array(i,1)/(current_config -1);
+    avg_energy_difference(i,1) = avg_energy_difference(i,1)/(current_config - 1);
+    edges_array(i,1) = sum(config_i);
+end
+
+distance_array = distance_array*1/54;
+
+%%
+min_distance = zeros(current_config,1);
+max_distance  = zeros(current_config,1);
+min_idx  = 0;
+max_idx = 0;
+
+
+
+l =1;
+for i = 1:current_config -1:size(distance_array,1)
+
+    dist_config = distance_array(i: i + current_config - 2,1);
+    
+    
+    [min_distance(l,1), ~] = min(dist_config,[],1);
+    [max_distance(l,1),~] = max(dist_config,[],1);
+    
+    
+    for j = 1: length(dist_config)
+        if dist_config(j,1) == min_distance(l,1)
+            if min_idx == 0
+                if j>=l
+                    min_idx = j+1;
+                    config_idx_min = l;
+                    min_configs = ordered_configs(j+1,:);
+                else
+                    min_idx = j;
+                    config_idx_min = l;
+                    min_configs = ordered_configs(j,:);
+                end
+                    
+            elseif min_idx ~= 0
+                if j>=l
+                    min_idx = [min_idx j+1];
+                    config_idx_min = [config_idx_min l];
+                    min_configs = [min_configs ordered_configs(j+1,:)];
+                    
+                else
+                    min_idx = [min_idx j];
+                    config_idx_min = [config_idx_min l];
+                    min_configs = [min_configs ordered_configs(j,:)];
+                end
+                    
+            end
+        end
+        
+        if dist_config(j,1) == max_distance(l,1)
+            if max_idx == 0
+                if j>=l
+                    max_idx = j+1;
+                    config_idx_max = l;
+                    max_configs = ordered_configs(j+1,:);
+                else
+                    max_idx = j;
+                    config_idx_max = l;
+                    max_configs = ordered_configs(j,:);
+                end
+                    
+            elseif min_idx ~= 0
+                if j>=l
+                    max_idx = [max_idx j+1];
+                    config_idx_max = [config_idx_max l];
+                    max_configs = [max_configs ordered_configs(j+1,:)];
+                else
+                    max_idx = [max_idx j];
+                    config_idx_max = [config_idx_max l];
+                    max_configs = [max_configs ordered_configs(j,:)];
+                end
+                    
+            end
+        end
+        
+    end
+    
+    l = l+1;
+end
+
+
+min_freq = zeros(current_config,1);
+max_freq = zeros(current_config,1);
+
+
+
+for i = 1:current_config
+    for j = 1:length(min_idx)
+        if ordered_configs_idx(1,i) == min_idx(1,j)
+            min_freq(i,1) = min_freq(i,1) + 1;
+        end
+    end
+    
+    for j = 1:length(max_idx)
+        if ordered_configs_idx(1,i) == max_idx(1,j)
+            max_freq(i,1) = max_freq(i,1) + 1;
+        end
+    end
+end
+
+
+
+save particular_configuration2by2.mat distance_matrix ordered_configs_idx ordered_configs
+%%
+path = 'possible_plots';
+
+figure('Name','Number of Configurations vs. Edges Used')
+plot(absolute_A,configs_num)
+title('Number of Configurations vs. Number of Edges Used')
+xlabel('Number of Edges Used')
+ylabel('Number of Configurations')
+saveas(gca, fullfile(path,'num_configs.fig'), 'fig');
+saveas(gca, fullfile(path,'num_configs.jpeg'), 'jpeg')
+
+figure('Name','Total Frequency vs Edges Used')
+plot(absolute_A, total_frequency)
+title('Total Frequency vs. Number of Edges Used')
+xlabel('Number of Edges Used')
+ylabel('Total Frequency')
+saveas(gca, fullfile(path,'freq_configs.fig'), 'fig');
+saveas(gca, fullfile(path,'freq_configs.jpeg'), 'jpeg')
+
+
+
+top_freqs = 4;
+[max_freqs, max_freqs_idx] = maxk(configuration_frequency,top_freqs);
+[max_dists, max_dists_idx] = maxk(avg_distance_array,top_freqs);
+top_configurations = zeros(top_freqs,size(total_configs,2));
+
+
+for i = 1:top_freqs
+    top_configurations(i,:) = ordered_configs(max_freqs_idx(i,1),:);
+end
+
+h = 0;
+
+seen_configs = zeros(top_freqs,size(total_configs,2));
+path3 = 'particular_plots\top_configs2by2';
+for i = 1:top_freqs
+    h = 0;
+    while h == 0
+    [Q,k,H] = model_with_fixed_sinks_and_sources(size_graph_x,size_graph_y,source_loc,sinks,source_bound);
+    c = (abs(Q')>0);
+        if c == top_configurations(i,:)
+            if ismember(c,seen_configs,'rows') == 0
+                h = h + 1;
+                seen_configs(i,:) = (abs(Q)>0)';
+                figure
+                HWidths = 10*k/max(k);
+                num_nodes = numnodes(H);
+                p = plot(H,'Layout','force','LineWidth',HWidths);
+                p.NodeLabel = arrayfun(@num2str, 1:num_nodes, 'UniformOutput', false);
+                saveas(gca, fullfile(path3,['config' int2str(i) '.fig']), 'fig');
+                saveas(gca, fullfile(path3,['config' int2str(i) '.jpeg']), 'jpeg')
+                
+            end
+        end
+    end
+end
+
+path1 = 'particular_plots\by_geometry';
+
+set(0,'DefaultFigureVisible','on');
+
+f2 = figure('Name','Energy Dissapation vs. Number of Edges Used');
+scatter(total_used_edges, total_energy_array)
+title('Energy Dissapation vs. Number of Edges Used')
+xlabel('Number of Edges Used')
+ylabel('Energy Dissapation')
+saveas(gca, fullfile(path1,'energy_edges.fig'), 'fig');
+saveas(gca, fullfile(path1,'energy_edges.jpeg'), 'jpeg')
+
+figure('Name','Configuration Frequency');
+plot(ordered_configs_idx, configuration_frequency)
+title('Total Frequency vs. Configuration')
+xlabel('Configuration')
+ylabel('Total Frequency')
+for i = 1:length(configs_num)
+    vline(sum(configs_num(1:i)),'r')
+end
+    
+saveas(gca, fullfile(path1,'total_cofiguration_freq.fig'), 'fig');
+saveas(gca, fullfile(path1,'total_cofiguration_freq.jpeg'), 'jpeg')
+
+figure('Name','Average Distance From Other Optimum');
+plot(ordered_configs_idx, avg_distance_array)
+title('Average Distance From Other Optimum vs. Configuration')
+xlabel('Configuration')
+ylabel('Average Distance From Other Optimum')
+saveas(gca, fullfile(path1,'avg_dist.fig'), 'fig');
+saveas(gca, fullfile(path1,'avg_dist.jpeg'), 'jpeg');
+
+
+figure('Name','Energy at Each Configuration');
+scatter(energy_array_idx, total_energy_array)
+title('Energy at Each Configuration vs. Configuration')
+xlabel('Configuration')
+ylabel('Energy at Each Configuration')
+
+hold on
+plot(ordered_configs_idx, avg_energy_array)
+
+hold off
+saveas(gca, fullfile(path1,'config_energy'), 'fig');
+saveas(gca, fullfile(path1,'config_energy'), 'jpeg');
+
+
+fg4 = figure('Name', 'Avg Energy Distance at Each Configuration');
+plot(ordered_configs_idx, avg_energy_difference)
+title('Avg Energy Distance at Each Configuration vs. Configuration')
+xlabel('Configuration')
+ylabel('Avg Energy Distance at Each Configuration')
+saveas(gca, fullfile(path1,'avg_energy_dist'), 'fig');
+saveas(gca, fullfile(path1,'avg_energy'), 'jpeg');
+
+fg5 = figure('Name', 'Histogram of Frequency of Frequencies');
+x = log10(configuration_frequency);
+ [~,edges] = histcounts(x);
+ y = 10.^edges;
+histogram(configuration_frequency,y)
+set(gca, 'xscale','log')
+title('Number of Different Configurations vs Frequency of Configuration Frequency')
+xlabel('Frequency of Configuration Frequency')
+ylabel('Number of Different Configurations')
+saveas(gca, fullfile(path1,'freq_histogram'), 'fig');
+saveas(gca, fullfile(path1,'freq_histogram'), 'jpeg');
+
+fg6 = figure('Name', 'Number of Edges Used vs Configuration');
+plot(ordered_configs_idx,edges_array)
+
+
+fg7 = figure('Name', 'Minimum Distance from Optimum vs Configuration');
+scatter(ordered_configs_idx, min_distance)
+title('Minimum Distance from Optimum vs Configuration')
+xlabel('Configuration')
+ylabel('Distance')
+saveas(gca, fullfile(path1,'min_dist'), 'fig');
+saveas(gca, fullfile(path1,'min_dist'), 'jpeg');
+
+fg8 = figure('Name', 'Closest Configuration vs Configuration');
+scatter(config_idx_min, min_idx)
+title('Closest Configuration vs Configuration')
+xlabel('Configuration')
+ylabel('Closest Configuration')
+saveas(gca, fullfile(path1,'closest_configuration'), 'fig');
+saveas(gca, fullfile(path1,'closest_configuration'), 'jpeg');
+
+fg9 = figure('Name', 'Frequency vs. Closest Configurations');
+scatter(ordered_configs_idx, min_freq)
+title('Frequency vs. Closest Configurations')
+xlabel('Closest Configuration')
+ylabel('Frquency')
+saveas(gca, fullfile(path1,'closest_freq'), 'fig');
+saveas(gca, fullfile(path1,'closest_freq'), 'jpeg');
+
+
+fg10 = figure('Name', 'Histogram of Frequency of Minimum Distance Frequencies');
+x = log10(min_freq);
+ [~,edges] = histcounts(x);
+ y = 10.^edges;
+histogram(min_freq,y)
+set(gca, 'xscale','log')
+title('Number of Different Configurations vs. Frequency of Minimum Distance Frequencies')
+xlabel('Frequency of Minimum Distance Frequencies')
+ylabel('Number of Different Configurations')
+saveas(gca, fullfile(path1,'closest_histogram'), 'fig');
+saveas(gca, fullfile(path1,'closest_histogram'), 'jpeg');
+
+fg7 = figure('Name', 'Maximum Distance from Optimum vs Configuration');
+scatter(ordered_configs_idx, max_distance)
+title('Maximum Distance from Optimum vs Configuration')
+xlabel('Configuration')
+ylabel('Distance')
+saveas(gca, fullfile(path1,'max_dist'), 'fig');
+saveas(gca, fullfile(path1,'max_dist'), 'jpeg');
+
+
+fg8 = figure('Name', 'Farthest Configuration vs Configuration');
+scatter(config_idx_max, max_idx)
+title('Farthest Configuration vs Configuration')
+xlabel('Configuration')
+ylabel('Farthest Configuration')
+saveas(gca, fullfile(path1,'farthest_configuration'), 'fig');
+saveas(gca, fullfile(path1,'farthest_configuration'), 'jpeg');
+
+
+figure('Name', 'Frequency vs. Farthest Configurations');
+scatter(ordered_configs_idx, max_freq)
+title('Frequency vs. Farthest Configurations')
+xlabel('Farthest Configuration')
+ylabel('Frquency')
+saveas(gca, fullfile(path1,'farthest_freq'), 'fig');
+saveas(gca, fullfile(path1,'farthest_freq'), 'jpeg');
+
+
+figure('Name', 'Histogram of Frequency of Maximum Distance Frequencies');
+x = log10(max_freq);
+ [~,edges] = histcounts(x);
+ y = 10.^edges;
+histogram(max_freq,y)
+set(gca, 'xscale','log')
+title('Number of Different Configurations vs. Frequency of Maximum Distance Frequencies')
+xlabel('Frequency of Maximum Distance Frequencies')
+ylabel('Number of Different Configurations')
+saveas(gca, fullfile(path1,'farthest_histogram'), 'fig');
+saveas(gca, fullfile(path1,'farthest_histogram'), 'jpeg');
+
+
+
+end
+
