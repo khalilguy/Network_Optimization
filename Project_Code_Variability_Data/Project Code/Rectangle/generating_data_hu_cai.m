@@ -291,7 +291,7 @@ for i = 1:total_trials
         end
 end
 
-path = ['hu_cai_possible_plots\' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'mean_' num2str(v) 'variance'];
+path = ['hu_cai_raw_data_plots\' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'mean_' num2str(v) 'variance'];
 mkdir(path);
 set(0,'DefaultFigureVisible','on');
 fg = figure('Name','Number of Trials Performed vs. Distance from Total Configurations');
