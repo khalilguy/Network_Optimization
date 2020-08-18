@@ -325,7 +325,12 @@ saveas(gca, fullfile(path,'num_freq_configs.fig'), 'fig');
 saveas(gca, fullfile(path,'num_freq_configs.jpeg'), 'jpeg')
 
 mkdir('data')
-filename = ['data\gd_hu_cai' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'm_' num2str(v) 'v.mat'];
+%File path when working on windows
+%filename = ['data\gd_hu_cai' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'm_' num2str(v) 'v.mat'];
+
+%File path when working on MacOS
+filename = ['data/gd_hu_cai' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'm_' num2str(v) 'v.mat'];
+
 % save possible_configurations_hu_cai0by1.mat current_config configs_num total_configs total_trials absolute_A total_frequency total_Q_matrix total_energy_array total_used_edges changed_direction_array total_flow_configs
 save(filename, 'current_config', 'current_config_flow', 'configs_num', 'total_configs', 'total_trials', 'total_flow_trials', 'absolute_A', 'total_frequency', 'total_Q_matrix', 'total_Qflow_matrix', 'total_energy_array', 'total_used_edges', 'changed_direction_array', 'total_flow_configs', 'trials_array', 'config_array', 'flow_trials_array', 'unique_k_configs', 'unique_Q_configs', 'unique_energy')
 % save possible_configurations_hu_cai2by3.mat current_config configs_num total_configs total_trials absolute_A total_frequency total_Q_matrix total_energy_array total_used_edges changed_direction_array total_flow_configs
