@@ -1,0 +1,1 @@
+possible_configurations2by3.mat filter=lfs diff=lfs merge=lfs -text
