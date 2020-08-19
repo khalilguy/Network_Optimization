@@ -8,12 +8,12 @@ tic
 tspan = 0:100;
 c_0 = 1;
 weights = 1;
-target = 200;
+target = 3;
 trials = 1000;
 source_bound = 500;
 
 
-v = 1:.5:10;
+v = 1:2:10;
 m = -v.^2/2;
 
 %0,1
@@ -27,13 +27,13 @@ for i = 1:length(v)
 end
 
 
-for i = 1:length(v)
-    source_loc = [32 36 40]';
-    sinks = [1 7 11]';
-    possible_configurations_hu_cai(2,2,source_loc,sinks,source_bound,trials,target,tspan,c_0,weights,m(i),v(i));
-    particular_configuration_hu_cai(2,2,source_loc,sinks,source_bound,trials,target,tspan,c_0,weights,m(i),v(i));
-    close all
-end 
+% for i = 1:length(v)
+%     source_loc = [32 36 40]';
+%     sinks = [1 7 11]';
+%     possible_configurations_hu_cai(2,2,source_loc,sinks,source_bound,trials,target,tspan,c_0,weights,m(i),v(i));
+%     particular_configuration_hu_cai(2,2,source_loc,sinks,source_bound,trials,target,tspan,c_0,weights,m(i),v(i));
+%     close all
+% end 
 
 % 0,1
 % tic

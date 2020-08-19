@@ -2,10 +2,10 @@ function analysis_hu_cai(size_graph_x, size_graph_y,source_loc,sinks,source_boun
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 %File path when working on Windows
-%filename = ['data/gd_hu_cai' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'm_' num2str(v) 'v.mat'];
+%filename = ['data\gd_hu_cai' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'm_' num2str(v) 'v.mat'];
 
 %File path when working on MacOS
-filename = ['data\gd_hu_cai' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'm_' num2str(v) 'v.mat'];
+filename = ['data/gd_hu_cai' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'm_' num2str(v) 'v.mat'];
 
 
 % load possible_configurations_hu_cai2by2.mat current_config configs_num total_configs total_trials absolute_A total_frequency total_Q_matrix total_energy_array total_used_edges unique_k_configs unique_Q_configs unique_energy
@@ -269,10 +269,10 @@ mkdir(path)
 
 
 %File path when working on Windows
-%path2 = ['hu_cai_raw_data_plots\' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'mean_' num2str(v) 'variance'];
+%path2 = ['hu_cai_raw_data_plots\' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'm_' num2str(v) 'v'];
 
 %File path when working on MacOS
-path2 = ['hu_cai_raw_data_plots/' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'mean_' num2str(v) 'variance'];
+path2 = ['hu_cai_raw_data_plots/' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'm_' num2str(v) 'v'];
 
 mkdir(path2);
 
@@ -311,10 +311,10 @@ top_configurations = ordered_configs(max_freqs_idx,:);
 
 seen_configs = zeros(top_freqs,size(total_configs,2));
 %File path when working on Windows
-% path3 = ['hu_cai_analysis_plots/' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'mean_' num2str(v) 'variance/top_configs2by2'];
+% path3 = ['hu_cai_analysis_plots\' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'mean_' num2str(v) 'variance\top_configs2by2'];
 
 %File path when working on MacOS
-path3 = ['hu_cai_analysis_plots\' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'mean_' num2str(v) 'variance\top_configs2by2'];
+path3 = ['hu_cai_analysis_plots/' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'm_' num2str(v) 'v/top_configs2by2'];
 
 mkdir(path3)
 for i = 1:size(top_configurations,1)
@@ -338,21 +338,24 @@ for i = 1:size(top_configurations,1)
         end
     end
 end
-<<<<<<< HEAD
+
 %Windows file path
 % filename = ['data\analysis_hu_cai' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'm_' num2str(v) 'v.mat'];
 
 %MacOS file path
 filename = ['data/analysis_hu_cai' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'm_' num2str(v) 'v.mat'];
 
-=======
->>>>>>> c241e9146e51c14c85d4e8a47f13639fba1a77e8
+
 % save(filename, 'distance_matrix', 'ordered_configs_idx', 'ordered_configs', 'total_frequency', 'configuration_frequency', 'top_configurations', 'tri_configs', 'top_unique_k_configurations', 'ordered_unique_k_configs')
 save(filename,'ordered_configs_idx', 'ordered_configs', 'total_frequency', 'configuration_frequency', 'top_configurations', 'top_unique_k_configurations', 'ordered_unique_k_configs')
 %%
 
 %Windows file path
-path4 = ['hu_cai_analysis_plots\' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'mean_' num2str(v) 'variance\by_geometry'];
+% path4 = ['hu_cai_analysis_plots\' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'mean_' num2str(v) 'variance\by_geometry'];
+
+%MacOS file path
+path4 = ['hu_cai_analysis_plots/' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'mean_' num2str(v) 'variance/by_geometry'];
+
 mkdir(path4)
 f2 = figure('Name','Energy Dissapation vs. Number of Edges Used');
 scatter(total_used_edges, total_energy_array)
