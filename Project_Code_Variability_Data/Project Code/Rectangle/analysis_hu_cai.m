@@ -319,7 +319,9 @@ path3 = ['hu_cai_analysis_plots/' int2str(size_graph_x) '_by_' int2str(size_grap
 mkdir(path3)
 for i = 1:size(top_configurations,1)
     h = 0;
-    while h == 0
+    t = 0;
+    while h == 0 && t < 200
+        t = t + 1;
         [H,~,~,~,Q,~,k,~,~,~] = hu_cai_model_with_fixed_sinks_and_sources(size_graph_x, size_graph_y,source_loc,sinks,source_bound,tspan,c_0,weights,m,v);
         c = (abs(Q')>0);
         if c == top_configurations(i,:)
@@ -347,14 +349,14 @@ filename = ['data/analysis_hu_cai' int2str(size_graph_x) '_by_' int2str(size_gra
 
 
 % save(filename, 'distance_matrix', 'ordered_configs_idx', 'ordered_configs', 'total_frequency', 'configuration_frequency', 'top_configurations', 'tri_configs', 'top_unique_k_configurations', 'ordered_unique_k_configs')
-save(filename,'ordered_configs_idx', 'ordered_configs', 'total_frequency', 'configuration_frequency', 'top_configurations', 'top_unique_k_configurations', 'ordered_unique_k_configs')
+save(filename,'ordered_configs_idx', 'ordered_configs', 'total_frequency', 'configuration_frequency', 'top_configurations', 'top_unique_k_configurations', 'ordered_unique_k_configs','avg_of_binned_energy', 'avg_of_binned_configuration_freq','big_E')
 %%
 
 %Windows file path
 % path4 = ['hu_cai_analysis_plots\' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'mean_' num2str(v) 'variance\by_geometry'];
 
 %MacOS file path
-path4 = ['hu_cai_analysis_plots/' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'mean_' num2str(v) 'variance/by_geometry'];
+path4 = ['hu_cai_analysis_plots/' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'm_' num2str(v) 'v/by_geometry'];
 
 mkdir(path4)
 f2 = figure('Name','Energy Dissapation vs. Number of Edges Used');
