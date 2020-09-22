@@ -1,7 +1,7 @@
-function [H,time,C,k_i,Q_final,Q_initial,k_final,Q_flow_direction_final,changed_flow_direction]= hu_cai(tspan,c_0,s,t,source_loc,sink_loc,source_boundary_conditions,sink_boundary_conditions,weights,m,v)
+function [H,time,C,k_i,Q_final,Q_initial,k_final, Q_flow_direction_final,changed_flow_direction]= hu_cai(tspan,c_0,s,t,source_loc,sink_loc,source_boundary_conditions,sink_boundary_conditions,weights,m,v)
 
 num_edges = length(s);
-weights = ones(1,num_edges) + .5*lognrnd(m,v,1,num_edges);
+weights = lognrnd(m,v,1,num_edges);
 [k_i,I,it,F,p,num_nodes,H] = create_digraph(s,t,weights,source_loc,sink_loc,source_boundary_conditions,sink_boundary_conditions);
 Q_initial = calculate_flows(k_i,I,it,F,p,num_nodes);
 positive  = Q_initial > 0;

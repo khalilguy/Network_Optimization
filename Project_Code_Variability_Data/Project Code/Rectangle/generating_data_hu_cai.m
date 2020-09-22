@@ -110,7 +110,7 @@ trials_array = zeros(5000000,1);
 diff_array = zeros(5000000,1);
 
 
-while found < target && found_flow < target
+while found < target || found_flow < target
     for i = 1:trials
         [~,~,~,~,Q,~,k,~,Qflow,changed_direction] = hu_cai_model_with_fixed_sinks_and_sources(size_graph_x, size_graph_y,source_loc,sinks,source_bound,tspan,c_0,weights,m,v);
         used_edges = 0;
@@ -215,12 +215,12 @@ while found < target
     config_array(numit,1) = current_config;
     trials_array(numit,1) = total_trials;
     diff_array(numit,1) = diff;
-    numit = numit + 1;
+    numit = numit + 1
 
     absolute_A = unique(total_used_edges);
 
     if diff == 0
-        found = found + 1;
+        found = found + 1
     end
 end
 

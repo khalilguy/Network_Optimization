@@ -4,36 +4,36 @@
 %network. Below are are few of the network dimensions that were used and
 %there correspond source and sink locations semetrically placed at opposite
 %ends of the lattice
-tic
+
 tspan = 0:100;
 c_0 = 1;
 weights = 1;
-target = 200;
+target = 150;
 trials = 1000;
 source_bound = 500;
 
 
-v = 1:.5:10;
+v = 1:.5:15;
 m = -v.^2/2;
 
 %0,1
 
-for i = 1:length(v)
-    source_loc = [8,4]';
-    sinks = [7,1]';
-    generating_data_hu_cai(0,1,source_loc,sinks,source_bound,trials,target,tspan,c_0,weights,m(i),v(i));
-    analysis_hu_cai(0,1,source_loc,sinks,source_bound,trials,target,tspan,c_0,weights,m(i),v(i));
-    close all
-end
+% for i = 1:length(v)
+%     source_loc = [8,4]';
+%     sinks = [7,1]';
+%     generating_data_hu_cai(0,1,source_loc,sinks,source_bound,trials,target,tspan,c_0,weights,m(i),v(i));
+%     analysis_hu_cai(0,1,source_loc,sinks,source_bound,trials,target,tspan,c_0,weights,m(i),v(i));
+%     close all
+% end
 
 
-for i = 1:length(v)
-    source_loc = [32 36 40]';
-    sinks = [1 7 11]';
-    possible_configurations_hu_cai(2,2,source_loc,sinks,source_bound,trials,target,tspan,c_0,weights,m(i),v(i));
-    particular_configuration_hu_cai(2,2,source_loc,sinks,source_bound,trials,target,tspan,c_0,weights,m(i),v(i));
-    close all
-end 
+% for i = 1:length(v)
+%     source_loc = [32 36 40]';
+%     sinks = [1 7 11]';
+%     generating_data_hu_cai(2,2,source_loc,sinks,source_bound,trials,target,tspan,c_0,weights,m(i),v(i));
+%     analysis_hu_cai(2,2,source_loc,sinks,source_bound,trials,target,tspan,c_0,weights,m(i),v(i));
+%     close all
+% end 
 
 
 % 0,1
@@ -147,28 +147,70 @@ end
 %unique configuration
  
 %%
-% [out_nodes, in_nodes,sink_loc] = hexagonal_graph_fixed_sinks(3,9,source_loc,sinks);
-% tspan = 0:40;
-% c_0 = 1;
-% num_edges = length(out_nodes);
-% weights = ones(1,num_edges) + .5*rand(1,num_edges);
-% [H,~,~,~,Q,~,k_final,~,~,~] = hu_cai_model_with_fixed_sinks_and_sources(3,9,source_loc,sinks,source_bound,tspan,c_0,weights);
-% for i = 1:trials
-% [k,H,time,C,k_i,Qf,Qi,k_final,edgeidx] = hu_cai_model_with_fixed_sinks_and_sources(2,2,source_loc,sinks,source_bound,tspan,c_0,weights);
-% % C = real(C);
-% figure(1)
-% plot(time, C(:,:))
-% figure(2)
-% HWidths = max(5*k_final/max(k_final),10^-6);
-% plot(H,'Layout','force','EdgeLabel',k_final,'LineWidth',HWidths)
-% end
-% 
-% figure(3)
-% HWidths = max(5*k_final/max(k_final),10^-6);
-% num_nodes = numnodes(H);
-% p = plot(H,'Layout','force','LineWidth',HWidths);
-% p.NodeLabel = arrayfun(@num2str, 1:num_nodes, 'UniformOutput', false);
+v = 1;
+m = -v.^2/2;
 
+source_loc = [8,4]';
+sinks = [7,1]';
+[H,~,~,k_i,Qf,Qi,k_final,edgeidx,~,~] = hu_cai_model_with_fixed_sinks_and_sources(0,1,source_loc,sinks,source_bound,tspan,c_0,weights,m,v);
+k_inits = zeros(length(k_i), 1000);
+k_finals = zeros(length(k_i), 1000);
+
+for i = 1: trials
+    [H,~,~,k_i,Qf,Qi,k_final,edgeidx,~,~] = hu_cai_model_with_fixed_sinks_and_sources(0,1,source_loc,sinks,source_bound,tspan,c_0,weights,m,v);
+    k_inits(:,i) = k_i;
+    k_finals(:,i) = k_final;
+end
+k_thresh = k_finals > 10^-6;
+% C = real(C);
+
+num_bins = 100;
+[binned_k_inits, k_inits_bins] = discretize(k_inits, num_bins);
+
+k_frequency = zeros(length(k_i),num_bins);
+
+for i = 1:num_bins
+    for j = 1:size(k_inits,1)
+        for k = 1:size(k_inits,2)
+            if binned_k_inits(j,k) == i
+                k_frequency(j,i) = k_frequency(j,i) + k_thresh(j,i);
+            end
+        end
+    end
+end
+
+k_frequency = k_frequency;
+figure(1)
+HWidths = max(5*k_final/max(k_final),10^-6);
+num_nodes = numnodes(H);
+HWidths
+p = plot(H,'Layout','force','LineWidth',HWidths);
+%label = {'this'};
+labeledge(p,5,6, label)
+p.NodeLabel = arrayfun(@num2str, 1:num_nodes, 'UniformOutput', false);
+
+figure(2)
+hold on
+histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(1,:),'DisplayName', '2-1')
+histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(2,:),'DisplayName', '3-2')
+histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(3,:),'DisplayName', '4-3')
+histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(9,:),'DisplayName', '9-8')
+histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(10,:),'DisplayName', '9-10')
+histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(11,:),'DisplayName', '10-7')
+
+legend
+
+figure(3)
+hold on
+histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(4,:), 'DisplayName', '4-5')
+histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(6,:), 'DisplayName', '6-1')
+histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(7,:), 'DisplayName', '6-7')
+histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(8,:), 'DisplayName', '8-5')
+
+legend
+figure(4)
+histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(5,:), 'DisplayName', '5-6')
+legend
 %%
 tspan = 0:100;
 c_0 = 1;
