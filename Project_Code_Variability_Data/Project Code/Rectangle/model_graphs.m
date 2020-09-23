@@ -147,70 +147,71 @@ m = -v.^2/2;
 %unique configuration
  
 %%
-v = 1;
-m = -v.^2/2;
 
-trials = 1000;
-source_loc = [8,4]';
-sinks = [7,1]';
-[H,~,~,k_i,Qf,Qi,k_final,edgeidx,~,~] = hu_cai_model_with_fixed_sinks_and_sources(0,1,source_loc,sinks,source_bound,tspan,c_0,weights,m,v);
-k_inits = zeros(length(k_i), trials);
-k_finals = zeros(length(k_i),trials);
-
-for i = 1: trials
-    [H,~,~,k_i,Qf,Qi,k_final,edgeidx,~,~] = hu_cai_model_with_fixed_sinks_and_sources(0,1,source_loc,sinks,source_bound,tspan,c_0,weights,m,v);
-    k_inits(:,i) = k_i;
-    k_finals(:,i) = k_final;
-end
-k_thresh = k_finals > 10^-6;
-% C = real(C);
-
-num_bins = 100;
-[binned_k_inits, k_inits_bins] = discretize(k_inits, num_bins);
-
-k_frequency = zeros(length(k_i),num_bins);
-
-for i = 1:num_bins
-    for j = 1:size(k_inits,1)
-        for k = 1:size(k_inits,2)
-            if binned_k_inits(j,k) == i
-                k_frequency(j,i) = k_frequency(j,i) + k_thresh(j,i);
-            end
-        end
-    end
-end
-
-figure(1)
-HWidths = max(5*k_final/max(k_final),10^-6);
-num_nodes = numnodes(H);
-HWidths
-p = plot(H,'Layout','force','LineWidth',HWidths);
-%label = {'this'};
-labeledge(p,5,6, label)
-p.NodeLabel = arrayfun(@num2str, 1:num_nodes, 'UniformOutput', false);
-
-figure(2)
-hold on
-histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(1,:),'DisplayName', '2-1')
-histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(2,:),'DisplayName', '3-2')
-histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(3,:),'DisplayName', '4-3')
-histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(9,:),'DisplayName', '9-8')
-histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(10,:),'DisplayName', '9-10')
-histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(11,:),'DisplayName', '10-7')
-
-legend
-
-figure(3)
-hold on
-histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(4,:), 'DisplayName', '4-5')
-histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(6,:), 'DisplayName', '6-1')
-histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(7,:), 'DisplayName', '6-7')
-histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(8,:), 'DisplayName', '8-5')
-
-legend
-figure(4)
-histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(5,:), 'DisplayName', '5-6')
-legend
+% v = 1;
+% m = -v.^2/2;
+% 
+% trials = 1000;
+% source_loc = [8,4]';
+% sinks = [7,1]';
+% [H,~,~,k_i,Qf,Qi,k_final,edgeidx,~,~] = hu_cai_model_with_fixed_sinks_and_sources(0,1,source_loc,sinks,source_bound,tspan,c_0,weights,m,v);
+% k_inits = zeros(length(k_i), trials);
+% k_finals = zeros(length(k_i),trials);
+% 
+% for i = 1: trials
+%     [H,~,~,k_i,Qf,Qi,k_final,edgeidx,~,~] = hu_cai_model_with_fixed_sinks_and_sources(0,1,source_loc,sinks,source_bound,tspan,c_0,weights,m,v);
+%     k_inits(:,i) = k_i;
+%     k_finals(:,i) = k_final;
+% end
+% k_thresh = k_finals > 10^-6;
+% % C = real(C);
+% 
+% num_bins = 100;
+% [binned_k_inits, k_inits_bins] = discretize(k_inits, num_bins);
+% 
+% k_frequency = zeros(length(k_i),num_bins);
+% 
+% for i = 1:num_bins
+%     for j = 1:size(k_inits,1)
+%         for k = 1:size(k_inits,2)
+%             if binned_k_inits(j,k) == i
+%                 k_frequency(j,i) = k_frequency(j,i) + k_thresh(j,i);
+%             end
+%         end
+%     end
+% end
+% 
+% figure(1)
+% HWidths = max(5*k_final/max(k_final),10^-6);
+% num_nodes = numnodes(H);
+% HWidths
+% p = plot(H,'Layout','force','LineWidth',HWidths);
+% %label = {'this'};
+% labeledge(p,5,6, label)
+% p.NodeLabel = arrayfun(@num2str, 1:num_nodes, 'UniformOutput', false);
+% 
+% figure(2)
+% hold on
+% histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(1,:),'DisplayName', '2-1')
+% histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(2,:),'DisplayName', '3-2')
+% histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(3,:),'DisplayName', '4-3')
+% histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(9,:),'DisplayName', '9-8')
+% histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(10,:),'DisplayName', '9-10')
+% histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(11,:),'DisplayName', '10-7')
+% 
+% legend
+% 
+% figure(3)
+% hold on
+% histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(4,:), 'DisplayName', '4-5')
+% histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(6,:), 'DisplayName', '6-1')
+% histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(7,:), 'DisplayName', '6-7')
+% histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(8,:), 'DisplayName', '8-5')
+% 
+% legend
+% figure(4)
+% histogram('BinEdges',k_inits_bins, 'BinCounts',k_frequency(5,:), 'DisplayName', '5-6')
+% legend
 %%
 tspan = 0:100;
 c_0 = 1;
