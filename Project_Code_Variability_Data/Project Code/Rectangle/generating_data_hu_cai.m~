@@ -131,7 +131,7 @@ while found < target || found_flow < target
         %saving all the important information each trial
         total_k_matrix(:,i+total_trials) = k;
         total_Q_matrix(:,i+total_trials) = Q;
-        total_init_Q_matrix(:,i+total_trials) = Q_inital;
+        total_init_Q_matrix(:,i+total_trials) = Q_initial;
         total_used_edges(i + total_trials,1) = used_edges;
         total_energy_array(i+total_trials,1) = E;
         total_Qflow_matrix(:,i+total_flow_trials) = Qflow;
@@ -272,6 +272,8 @@ total_Q_matrix(:,~any(total_Q_matrix,1)) = [];
 total_init_Q_matrix(:,~any(total_init_Q_matrix,1)) = [];
 total_used_edges(total_used_edges == 0) = [];
 total_energy_array(total_energy_array == 0) = [];
+trials_array(trails_array == 0) = [];
+
 total_Qflow_matrix(:,~any(total_Qflow_matrix,1)) = [];
 changed_direction_array(changed_direction_array == 0) = [];
 
@@ -295,45 +297,45 @@ for i = 1:total_trials
         end
 end
 
-path = ['hu_cai_raw_data_plots/' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'm_' num2str(v) 'v'];
-mkdir(path);
-set(0,'DefaultFigureVisible','on');
-fg = figure('Name','Number of Trials Performed vs. Distance from Total Configurations');
-subplot(1,2,1)
-plot(trials_array, diff_array);
-title('Number of Trials Performed vs. Distance from Total Configurations')
-xlabel('Number of Trials Performed')
-ylabel('Distance from Total Configurations')
+% path = ['hu_cai_raw_data_plots/' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'm_' num2str(v) 'v'];
+% mkdir(path);
+% set(0,'DefaultFigureVisible','on');
+% fg = figure('Name','Number of Trials Performed vs. Distance from Total Configurations');
+% subplot(1,2,1)
+% plot(trials_array, diff_array);
+% title('Number of Trials Performed vs. Distance from Total Configurations')
+% xlabel('Number of Trials Performed')
+% ylabel('Distance from Total Configurations')
+% 
+% subplot(1,2,2)
+% plot(trials_array,config_array);
+% title('Number of Trials Performed vs. Number of Configurations Found')
+% xlabel('Number of Trials Performed')
+% ylabel('Number of Configurations Found')
+% saveas(gca, fullfile(path,'trials_diff_configs.fig'), 'fig');
+% saveas(gca, fullfile(path,'trials_diff_configs.jpeg'), 'jpeg');
+% 
+% fg2 = figure('Name','Number of Configurations for a Particular Number of Edges Used vs. Number of Edges Used');
+% subplot(1,2,1)
+% plot(absolute_A,configs_num)
+% title('Number of Configurations for a Particular Number of Edges Used vs. Number of Edges Used')
+% xlabel('Number of Edges Used')
+% ylabel('Number of Configurations')
+% 
+% subplot(1,2,2)
+% plot(absolute_A, total_frequency)
+% title('Total Frequency vs. Number of Edges Used')
+% xlabel('Number of Edges Used')
+% ylabel('Total Frequency')
+% saveas(gca, fullfile(path,'num_freq_configs.fig'), 'fig');
+% saveas(gca, fullfile(path,'num_freq_configs.jpeg'), 'jpeg')
 
-subplot(1,2,2)
-plot(trials_array,config_array);
-title('Number of Trials Performed vs. Number of Configurations Found')
-xlabel('Number of Trials Performed')
-ylabel('Number of Configurations Found')
-saveas(gca, fullfile(path,'trials_diff_configs.fig'), 'fig');
-saveas(gca, fullfile(path,'trials_diff_configs.jpeg'), 'jpeg');
-
-fg2 = figure('Name','Number of Configurations for a Particular Number of Edges Used vs. Number of Edges Used');
-subplot(1,2,1)
-plot(absolute_A,configs_num)
-title('Number of Configurations for a Particular Number of Edges Used vs. Number of Edges Used')
-xlabel('Number of Edges Used')
-ylabel('Number of Configurations')
-
-subplot(1,2,2)
-plot(absolute_A, total_frequency)
-title('Total Frequency vs. Number of Edges Used')
-xlabel('Number of Edges Used')
-ylabel('Total Frequency')
-saveas(gca, fullfile(path,'num_freq_configs.fig'), 'fig');
-saveas(gca, fullfile(path,'num_freq_configs.jpeg'), 'jpeg')
-
-mkdir('data')
+mkdir('small_network_data')
 %File path when working on windows
 %filename = ['data\gd_hu_cai' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'm_' num2str(v) 'v.mat'];
 
 %File path when working on MacOS
-filename = ['data/gd_hu_cai' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'm_' num2str(v) 'v.mat'];
+filename = ['small_network_data/gd_hu_cai' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'm_' num2str(v) 'v.mat'];
 
 % save possible_configurations_hu_cai0by1.mat current_config configs_num total_configs total_trials absolute_A total_frequency total_Q_matrix total_energy_array total_used_edges changed_direction_array total_flow_configs
 save(filename, 'current_config', 'current_config_flow', 'configs_num', 'total_configs', 'total_trials', 'total_flow_trials', 'absolute_A', 'total_frequency', 'total_Q_matrix', 'total_Qflow_matrix', 'total_energy_array', 'total_used_edges', 'changed_direction_array', 'total_flow_configs', 'trials_array', 'config_array', 'flow_trials_array', 'unique_k_configs', 'unique_Q_configs', 'unique_energy','total_init_Q_matrix')

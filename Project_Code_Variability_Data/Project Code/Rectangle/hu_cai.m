@@ -2,6 +2,7 @@ function [H,time,C,k_i,Q_final,Q_initial,k_final, Q_flow_direction_final,changed
 
 num_edges = length(s);
 weights = lognrnd(m,v,1,num_edges);
+c_0  = sum(weights.^1/2);
 [k_i,I,it,F,p,num_nodes,H] = create_digraph(s,t,weights,source_loc,sink_loc,source_boundary_conditions,sink_boundary_conditions);
 Q_initial = calculate_flows(k_i,I,it,F,p,num_nodes);
 positive  = Q_initial > 0;
