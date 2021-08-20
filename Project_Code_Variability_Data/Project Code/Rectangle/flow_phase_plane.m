@@ -14,6 +14,7 @@ sinks = [7,1]';
 sum(k_i.^1/2)
 sum(k_final.^1/2)
 %generating_data_hu_cai(0,1,source_loc,sinks,source_bound,trials,target,tspan,c_0,weights,m,v);
+analysis_hu_cai(0,1,source_loc,sinks,source_bound,trials,target,tspan,c_0,weights,m,v);
 right_edge_flows = zeros(current_config,total_trials);
 left_edge_flows = zeros(current_config,total_trials);
 total_edgelist = (abs(total_Q_matrix) > 0)';

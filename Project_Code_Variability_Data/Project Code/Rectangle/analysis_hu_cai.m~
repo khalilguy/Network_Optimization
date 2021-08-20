@@ -315,7 +315,7 @@ seen_configs = zeros(top_freqs,size(total_configs,2));
 % path3 = ['hu_cai_analysis_plots\' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'mean_' num2str(v) 'variance\top_configs2by2'];
 
 %File path when working on MacOS
-path3 = ['small_network/' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'm_' num2str(v) 'v/top_configs2by2'];
+path3 = ['hu_cai_analysis_plots/' int2str(size_graph_x) '_by_' int2str(size_graph_y) '_' int2str(length(source_loc)) 'source_' int2str(length(sinks)) 'sinks_' num2str(m) 'm_' num2str(v) 'v/top_configs2by2'];
 
 mkdir(path3)
 for i = 1:size(top_configurations,1)
